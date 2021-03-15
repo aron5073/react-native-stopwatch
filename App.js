@@ -17,21 +17,6 @@ import {
   Dimensions,
 } from 'react-native';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
-        <TouchableOpacity
-          onPress={() => alert('hello world')}
-          style={styles.button}>
-          <Text style={styles.buttonText}> Start</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
-
 const screen = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -50,11 +35,62 @@ const styles = StyleSheet.create({
     borderRadius: screen.width / 2,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 30,
   },
   buttonText: {
     fontSize: 45,
     color: 'blue',
   },
+  timerText: {
+    color: '#fff',
+    fontSize: 90,
+  },
 });
 
-// export default App;
+//if its 3 it will become 03 if its 10 it will become 010 butb by using slice we will take only 2 digit 10 => 10
+const formatNumber = number => `0${number}`.slice(-2);
+
+const getRemaining = time => {
+  const minutes = Math.floor(time / 60);
+  const seconds = time - minutes * 60;
+  return {minutes: formatNumber(minutes), seconds: formatNumber(seconds)};
+};
+
+export default class App extends React.Component {
+  state = {
+    remaningSeconds: 5,
+  };
+
+  componentWillUnmount() {
+    if (this.interval) clearInterval(this.interval);
+  }
+
+  //its gonna depriciate the time
+  start = () => {
+    // this.setState(state => ({
+    //   remaningSeconds: state.remaningSeconds - 1,
+    // }));
+
+    this.interval = setInterval(() => {
+      this.setState(state => ({
+        remaningSeconds: state.remaningSeconds - 1,
+      }));
+    }, 1000);
+  };
+
+  //function for stoping the time to not go into minus
+
+  render() {
+    const {minutes, seconds} = getRemaining(this.state.remaningSeconds);
+
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <Text style={styles.timerText}>{`${minutes}:${seconds}`}</Text>
+        <TouchableOpacity onPress={this.start} style={styles.button}>
+          <Text style={styles.buttonText}> Start</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
