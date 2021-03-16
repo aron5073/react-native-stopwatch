@@ -15,8 +15,8 @@ import {
   StatusBar,
   TouchableOpacity,
   Dimensions,
-  Picker,
 } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 
 const screen = Dimensions.get('window');
 
@@ -49,8 +49,20 @@ const styles = StyleSheet.create({
     color: '#FF851B',
   },
   timerText: {
-    color: '#fff',
+    color: 'red',
     fontSize: 90,
+  },
+  picker: {
+    width: 50,
+    backgroundColor: 'red',
+  },
+  pickerItems: {
+    color: 'white',
+    fontSize: 20,
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
@@ -62,6 +74,20 @@ const getRemaining = time => {
   const seconds = time - minutes * 60;
   return {minutes: formatNumber(minutes), seconds: formatNumber(seconds)};
 };
+
+const createArray = length => {
+  //will give minute and seconds through available minute /second array
+  const arr = [];
+  let i = 0;
+  while (i < length) {
+    arr.push(i.toString());
+    i += 1;
+  }
+  return arr;
+};
+
+const AVAILABLE_MINUTES = createArray(10);
+const AVAILABLE_SECONDS = createArray(60);
 
 export default class App extends React.Component {
   state = {
@@ -98,13 +124,63 @@ export default class App extends React.Component {
     clearInterval(this.interval);
     this.interval = null;
     this.setState({
-      remaningSeconds: 5,
+      remaningSeconds: 5, //had to make it dynamic
       isRunning: false,
     });
   };
 
   renderPickers = () => {
-    return null;
+    return (
+      <View style={styles.pickerContainer}>
+        {/* here view work as div as if you want to store picker then one then you had to use view here */}
+        <Picker
+          selctedValue="2"
+          style={styles.picker}
+          itemStyle={styles.pickerItems}
+          onValueChange={itemValue => {
+            //will change timer dynamically here
+          }}
+          // by default its dialog so we making it dropdown to look cool
+          mode="dropdown">
+          {AVAILABLE_MINUTES.map((
+            value, //TODO: WHY WE HAD USED () INSTEAD OF {} WHILE MAKING THE ARROW FUNCTION
+          ) => (
+            <Picker.Item key={value} label={value} value={value} />
+          ))}
+
+          {/* manually we can do this 
+        <Picker.Item key="1" label="1" value="1" />
+        <Picker.Item key="2" label="2" value="2" />
+        <Picker.Item key="3" label="3" value="3" />
+        <Picker.Item key="4" label="4" value="4" />
+        <Picker.Item key="5" label="5" value="5" /> */}
+        </Picker>
+        <Text style={styles.pickerItems}>Minutes</Text>
+        <Picker
+          selctedValue="2"
+          style={styles.picker}
+          itemStyle={styles.pickerItems}
+          onValueChange={itemValue => {
+            //will change timer dynamically here
+          }}
+          mode="dropdown">
+          {AVAILABLE_SECONDS.map((
+            value, //TODO: WHY WE HAD USED () INSTEAD OF {} WHILE MAKING THE ARROW FUNCTION
+          ) => (
+            <Picker.Item key={value} label={value} value={value} />
+          ))}
+          {/* manually we can do this 
+      <Picker.Item key="1" label="1" value="1" />
+      <Picker.Item key="2" label="2" value="2" />
+      <Picker.Item key="3" label="3" value="3" />
+      <Picker.Item key="4" label="4" value="4" />
+      <Picker.Item key="5" label="5" value="5" /> */}
+        </Picker>
+        <Text style={styles.pickerItems}>Seconds</Text>
+      </View>
+    );
+
+    //items to be included in the picker are written here
   };
 
   render() {
