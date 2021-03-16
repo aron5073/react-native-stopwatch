@@ -15,6 +15,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 
@@ -49,15 +50,23 @@ const styles = StyleSheet.create({
     color: '#FF851B',
   },
   timerText: {
-    color: 'red',
+    color: '#fff',
     fontSize: 90,
   },
   picker: {
     width: 50,
-    backgroundColor: 'red',
+
+    // using spread operator it will return array containg objects
+    ...Platform.select({
+      android: {
+        color: '#fff',
+        backgroundColor: '#07121B',
+        marginLeft: 10,
+      },
+    }),
   },
   pickerItems: {
-    color: 'white',
+    color: '#fff',
     fontSize: 20,
   },
   pickerContainer: {
@@ -93,6 +102,8 @@ export default class App extends React.Component {
   state = {
     remaningSeconds: 5,
     isRunning: false,
+    selectedMinutes: '0',
+    selectedSeconds: '5',
   };
 
   interval = null;
@@ -108,7 +119,8 @@ export default class App extends React.Component {
   //its gonna depriciate the time
   start = () => {
     this.setState(state => ({
-      remaningSeconds: state.remaningSeconds - 1,
+      remaningSeconds:
+        parseInt(state.selectedMinutes) * 60 + parseInt(state.selectedSeconds),
       isRunning: true,
     }));
 
@@ -133,12 +145,14 @@ export default class App extends React.Component {
     return (
       <View style={styles.pickerContainer}>
         {/* here view work as div as if you want to store picker then one then you had to use view here */}
+        {/* for our minute part */}
         <Picker
-          selctedValue="2"
+          selctedValue={this.state.selectedMinutes}
           style={styles.picker}
           itemStyle={styles.pickerItems}
           onValueChange={itemValue => {
             //will change timer dynamically here
+            this.setState({selectedMinutes: itemValue});
           }}
           // by default its dialog so we making it dropdown to look cool
           mode="dropdown">
@@ -156,12 +170,14 @@ export default class App extends React.Component {
         <Picker.Item key="5" label="5" value="5" /> */}
         </Picker>
         <Text style={styles.pickerItems}>Minutes</Text>
+        {/* for our seconds part */}
         <Picker
-          selctedValue="2"
+          selctedValue={this.state.selectedSeconds}
           style={styles.picker}
           itemStyle={styles.pickerItems}
           onValueChange={itemValue => {
             //will change timer dynamically here
+            this.setState({selectedSeconds: itemValue});
           }}
           mode="dropdown">
           {AVAILABLE_SECONDS.map((
