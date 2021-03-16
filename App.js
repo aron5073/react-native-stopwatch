@@ -24,7 +24,7 @@ const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#07121B',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -50,28 +50,23 @@ const styles = StyleSheet.create({
     color: '#FF851B',
   },
   timerText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 90,
   },
   picker: {
     width: 50,
 
     // using spread operator it will return array containg objects
-    ...Platform.select({
-      android: {
-        color: '#fff',
-        backgroundColor: '#07121B',
-        marginLeft: 10,
-      },
-    }),
+    marginLeft: 10,
   },
   pickerItems: {
-    color: '#fff',
+    color: '#000',
     fontSize: 20,
   },
   pickerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
 });
 
